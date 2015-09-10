@@ -1,0 +1,6 @@
+ThermostatScreen	KEYWORD1
+begin	KEYWORD2
+printFloat	KEYWORD2
+printString	KEYWORD2
+eraseFloat	KEYWORD2
+eraseString	KEYWORD2

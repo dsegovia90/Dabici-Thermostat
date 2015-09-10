@@ -1,0 +1,9 @@
+SegoACControl	KEYWORD1
+begin	KEYWORD2
+setProtectACTimer	KEYWORD2
+getProtectACTimer	KEYWORD2
+setDeltaTemp	KEYWORD2
+getDeltaTemp	KEYWORD2
+setAmbientTemp	KEYWORD2
+getAmbientTemp	KEYWORD2
+getACMode	KEYWORD2

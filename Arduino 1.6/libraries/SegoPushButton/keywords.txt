@@ -1,3 +1,0 @@
-PushButton	KEYWORD1
-begin	KEYWORD2
-getStatus	KEYWORD2

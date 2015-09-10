@@ -1,13 +1,12 @@
 #Folders to ignore
-dir_to_ignore/Arduino 1.6/dist
-dir_to_ignore/Arduino 1.6/drivers
-dir_to_ignore/Arduino 1.6/examples
-dir_to_ignore/Arduino 1.6/hardware
-dir_to_ignore/Arduino 1.6/java
-dir_to_ignore/Arduino 1.6/lib
-dir_to_ignore/Arduino 1.6/reference
-dir_to_ignore/Arduino 1.6/tools
-
+Arduino 1.6/dist
+Arduino 1.6/drivers
+Arduino 1.6/examples
+Arduino 1.6/hardware
+Arduino 1.6/java
+Arduino 1.6/lib
+Arduino 1.6/reference
+Arduino 1.6/tools
 
 # Windows image file caches
 Thumbs.db

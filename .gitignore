@@ -1,9 +1,23 @@
+#Folders to ignore
+dir_to_ignore/Arduino 1.6/dist
+dir_to_ignore/Arduino 1.6/drivers
+dir_to_ignore/Arduino 1.6/examples
+dir_to_ignore/Arduino 1.6/hardware
+dir_to_ignore/Arduino 1.6/java
+dir_to_ignore/Arduino 1.6/lib
+dir_to_ignore/Arduino 1.6/reference
+dir_to_ignore/Arduino 1.6/tools
+
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
 
 # Folder config file
 Desktop.ini
+
+# Excecutables
+*.exe
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/

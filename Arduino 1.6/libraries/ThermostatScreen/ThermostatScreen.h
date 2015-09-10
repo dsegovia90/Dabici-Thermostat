@@ -38,11 +38,13 @@ class ThermostatScreen
 	int toPrintInt;
 	String toPrintString;
 	void begin();
-	void printFloat(float toPrintFloat);
-	void printString(String toPrintString);
+	
+	void print(float toPrintFloat);
+	void print(String toPrintString);
+	
 	void eraseFloat();
 	void eraseString();
-	void screenFlash(bool flash);
+	
 	void setXcord(int x);
 	void setYcord(int y);
 	

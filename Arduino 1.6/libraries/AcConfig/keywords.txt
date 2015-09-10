@@ -1,0 +1,12 @@
+AcConfig	KEYWORD1
+begin	KEYWORD2
+setDeltaTemp	KEYWORD2
+getDeltaTemp	KEYWORD2
+setAmbientTemp	KEYWORD2
+getAmbientTemp	KEYWORD2
+setAmbientTempInterval	KEYWORD2
+getAmbientTempInterval	KEYWORD2
+setTargetTemp	KEYWORD2
+getTargetTemp	KEYWORD2
+setACMode	KEYWORD2
+getACMode	KEYWORD2

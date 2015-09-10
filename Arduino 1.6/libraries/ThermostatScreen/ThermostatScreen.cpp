@@ -17,7 +17,7 @@ void ThermostatScreen::begin()
 
 
 
-void ThermostatScreen::printFloat(float toPrintFloat)
+void ThermostatScreen::print(float toPrintFloat)
 {
 	_toPrintFloat = toPrintFloat;
 	eraseFloat();
@@ -28,7 +28,7 @@ void ThermostatScreen::printFloat(float toPrintFloat)
 	tft.print(_toPrintFloat);
 	_toEraseFloat = _toPrintFloat;
 }
-void ThermostatScreen::printString(String toPrintString)
+void ThermostatScreen::print(String toPrintString)
 {
 	_toPrintString = toPrintString;
 	eraseString();
@@ -54,17 +54,3 @@ void ThermostatScreen::eraseString()
 	tft.print(_toEraseString);
 }
 
-void ThermostatScreen::screenFlash(bool flash)
-{
-	if (flash == true)
-	{
-		delay(500);
-		eraseString();
-		delay(500);
-		printString(_toPrintString);
-		
-	}else if (flash == false)
-	{
-		printString(_toPrintString);
-	}
-}

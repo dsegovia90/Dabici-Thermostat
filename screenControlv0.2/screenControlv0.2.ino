@@ -22,12 +22,13 @@ bool lastKnobPush = true;
 
 
 bool menuExit = false;
-unsigned long timerToCheckAmbientTemp = 0;
-unsigned long timerToSwitchMode = 0;
-unsigned long acProtectionTimer = 0;
+unsigned long timerToCheckAmbientTemp = 0;			//initialize this timer in 0 to later compare to actual time + delta
+unsigned long timerToSwitchMode = 0;				//initialize this timer in 0
+unsigned long acProtectionTimer = 0;				//initialize this timer in 0
 
 String menuvar;
 
+//Initialize Menu Arrays and Sizes////////////////////////////////////////////////
 int size_menu=4;
 String menu[4];
 
@@ -96,37 +97,42 @@ ConfiglAC.begin();
 int lastModeSetting = ConfiglAC.getACMode();
 ///Load default settings to control///
 ControlAC.begin(ConfiglAC.getACMode(),ConfiglAC.getAmbientTemp(),ConfiglAC.getTargetTemp(),ConfiglAC.getDeltaTemp(),ConfiglAC.getAmbientTempInterval());
-TemperatureSensor.begin();
-tft.begin();
-knobPush.begin();
-delay(200);
-TemperatureSensor.setResolution(11);
-TemperatureSensor.requestTemperatures();
-tft.fillScreen(ILI9340_BLACK);
-tft.setRotation(3);
+
+TemperatureSensor.begin();					//Initialize communication with temp sensor
+tft.begin();								//Initialize display
+knobPush.begin();							//Initialize knob's push button
+delay(200);									//Delay
+TemperatureSensor.setResolution(11);		//Set resolution of temp sensor (takes about 500ms to check @ resulution =11)
+TemperatureSensor.requestTemperatures();	//Request initial temperature to use in setup
+tft.fillScreen(ILI9340_BLACK);				//Fill screen to black (background color)
+tft.setRotation(3);							//Rotate Screen 3x90°
+
 //ScreenMode.print((String)ConfiglAC.getACMode());
-printACMode();
-ScreenTargetTempText.print("TARGET");
-ScreenTargetTemp.print(ConfiglAC.getTargetTemp());
-ConfiglAC.setAmbientTemp(TemperatureSensor.getTempCByIndex(0));
-ControlAC.setAmbientTemp(ConfiglAC.getAmbientTemp());
-ScreenAmbientTemp.print(ConfiglAC.getAmbientTemp());
-ScreenAmbientTempText.print("AMBIENT");
+
+printACMode();										//print ConfiglAC.getACMode() on ScreenMode.print()
+
+ScreenTargetTemp.print(ConfiglAC.getTargetTemp());	//print the target temp
+ScreenTargetTempText.print("TARGET");				//print small text below the target temp
+
+ConfiglAC.setAmbientTemp(TemperatureSensor.getTempCByIndex(0));	//go get ambient temp
+ControlAC.setAmbientTemp(ConfiglAC.getAmbientTemp());			//pass the variable to ControlAC so it can later calculate
+ScreenAmbientTemp.print(ConfiglAC.getAmbientTemp());			//Print the ambient temp
+ScreenAmbientTempText.print("AMBIENT");							//print the small text below ambient temp
  
 
 }
 
 void loop()
 {
-changeWishedTemp(rotation());
+changeWishedTemp(rotation());	//Check if there is movement in the knob, if there is add or subtract depending on the deltaStep
 
-	if (timerToCheckAmbientTemp + ConfiglAC.getAmbientTempInterval() <= millis())
+	if (timerToCheckAmbientTemp + ConfiglAC.getAmbientTempInterval() <= millis())	//how often to go check for temp in sensor (depends of Config AC variable in milliseconds)
 	{
-		TemperatureSensor.requestTemperatures();
-		ConfiglAC.setAmbientTemp(TemperatureSensor.getTempCByIndex(0));
-		ControlAC.setAmbientTemp(ConfiglAC.getAmbientTemp());
-		ScreenAmbientTemp.print(ConfiglAC.getAmbientTemp());
-		timerToCheckAmbientTemp = millis();
+		TemperatureSensor.requestTemperatures();									//request temp
+		ConfiglAC.setAmbientTemp(TemperatureSensor.getTempCByIndex(0));				//update temp to ConfigAC
+		ControlAC.setAmbientTemp(ConfiglAC.getAmbientTemp());						//update temp to ControlAC for it to compare
+		ScreenAmbientTemp.print(ConfiglAC.getAmbientTemp());						//print the temp to screen
+		timerToCheckAmbientTemp = millis();											//set the timer to actual time
 	}
 
 ControlAC.activateACMode();

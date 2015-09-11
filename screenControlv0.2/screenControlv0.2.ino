@@ -46,17 +46,20 @@ String menuvar;
 
 
 /*------Initialize Menu Arrays and Sizes------*/
-int size_menu=4;
-String menu[4];
+int const size_menu=4;
+String menu[size_menu];
 
-int size_menumode=4;
-String menumode[4];
+int const size_menuMode=4;
+String menuMode[size_menuMode];
 
-int size_menuset=5;
-String menuset[5];
+int const size_menuSet=5;
+String menuSet[size_menuSet];
 
-int size_menufan=3;
-String menufan[3];
+int const size_menuFan=3;
+String menuFan[size_menuFan];
+
+int const size_menuReference=2;
+String menuReference[size_menuReference];
 
 /*------Initialize Temperature Sensor------*/
 OneWire oneWire(ONE_WIRE_BUS);
@@ -91,26 +94,29 @@ int lastModeSetting=0;
 void setup()
 {
 	
-/*------Assing Menu String variables------*/
+/*------Assign Menu String variables------*/
 menu[0]="Mode";
 menu[1]="Set";	
 menu[2]="Exit";
 menu[3]="Fan";
 
-menumode[0]="Heat";
-menumode[1]="Cool";
-menumode[2]="Off";
-menumode[3]="Exit";
+menuMode[0]="Heat";
+menuMode[1]="Cool";
+menuMode[2]="Off";
+menuMode[3]="Exit";
 
-menuset[0]="Swing";
-menuset[1]="Step";
-menuset[2]="Min";
-menuset[3]="Max";
-menuset[4]="Exit";
+menuSet[0]="Swing";
+menuSet[1]="Step";
+menuSet[2]="Min";
+menuSet[3]="Max";
+menuSet[4]="Exit";
 
-menufan[0]="On";
-menufan[1]="Auto";
-menufan[2]="Exit";
+menuFan[0]="On";
+menuFan[1]="Auto";
+menuFan[2]="Exit";
+
+menuReference[0] = "AMBIENT";
+menuReference[1] = "TARGET";
 /*------------------------------------------*/
 
 /*------Create default AC Configuration------*/		
@@ -131,11 +137,11 @@ tft.fillScreen(ILI9340_BLACK);				//Fill screen to black (background color)
 tft.setRotation(3);							//Rotate Screen 3x90°
 printACMode();													//print ConfiglAC.getACMode() on ScreenMode.print()
 ScreenTargetTemp.print(ConfiglAC.getTargetTemp());				//print the target temp
-ScreenTargetTempText.print("TARGET");							//print small text below the target temp
+ScreenTargetTempText.print(menuReference[1]);							//print small text below the target temp
 ConfiglAC.setAmbientTemp(TemperatureSensor.getTempCByIndex(0));	//go get ambient temp
 ControlAC.setAmbientTemp(ConfiglAC.getAmbientTemp());			//pass the variable to ControlAC so it can later calculate
 ScreenAmbientTemp.print(ConfiglAC.getAmbientTemp());			//Print the ambient temp
-ScreenAmbientTempText.print("AMBIENT");							//print the small text below ambient temp
+ScreenAmbientTempText.print(menuReference[0]);							//print the small text below ambient temp
 
 }
 
@@ -486,7 +492,7 @@ void exitingMenu()
 	ScreenMenuLeft.eraseString();
 	
 	ScreenTargetTemp.print(ConfiglAC.getTargetTemp());
-	ScreenTargetTempText.print("TARGET");
+	ScreenTargetTempText.print(menuReference[1]);
 	printACMode();
 	delay(200);
 }
@@ -595,7 +601,7 @@ void principalMenu()
 void modeMenu()
 {
 	
-	menuPrintLeftMainRight(menumode);
+	menuPrintLeftMainRight(menuMode);
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
@@ -604,13 +610,13 @@ void modeMenu()
 		{
 			
 		case -1:
-		arrayshiftCW(menumode,size_menumode);
-		menuPrintLeftMainRight(menumode);
+		arrayshiftCW(menuMode,size_menuMode);
+		menuPrintLeftMainRight(menuMode);
 		break;
 		
 		case 1:
-		arrayshiftCWW(menumode,size_menumode);
-		menuPrintLeftMainRight(menumode);
+		arrayshiftCWW(menuMode,size_menuMode);
+		menuPrintLeftMainRight(menuMode);
 		break;
 		
 		default:
@@ -639,7 +645,7 @@ void modeMenu()
 void setMenu()
 {
 	
-	menuPrintLeftMainRight(menuset);
+	menuPrintLeftMainRight(menuSet);
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
@@ -647,13 +653,13 @@ void setMenu()
 		switch (rotation())
 		{
 			case -1:
-			arrayshiftCW(menuset,size_menuset);
-			menuPrintLeftMainRight(menuset);
+			arrayshiftCW(menuSet,size_menuSet);
+			menuPrintLeftMainRight(menuSet);
 			break;
 			
 			case 1:
-			arrayshiftCWW(menuset,size_menuset);
-			menuPrintLeftMainRight(menuset);
+			arrayshiftCWW(menuSet,size_menuSet);
+			menuPrintLeftMainRight(menuSet);
 			break;
 			
 			default:
@@ -682,7 +688,7 @@ void setMenu()
 void fanMenu()
 {
 	
-	menuPrintLeftMainRight(menufan);
+	menuPrintLeftMainRight(menuFan);
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
@@ -691,13 +697,13 @@ void fanMenu()
 		{
 			
 			case -1:
-			arrayshiftCW(menufan,size_menufan);
-			menuPrintLeftMainRight(menufan);
+			arrayshiftCW(menuFan,size_menuFan);
+			menuPrintLeftMainRight(menuFan);
 			break;
 			
 			case 1:
-			arrayshiftCWW(menufan,size_menufan);
-			menuPrintLeftMainRight(menufan);
+			arrayshiftCWW(menuFan,size_menuFan);
+			menuPrintLeftMainRight(menuFan);
 			break;
 			
 			default:
@@ -861,7 +867,7 @@ void menuSelect1()
 void modeAssign()
 {
 	int select = 0;
-	menuvar = menumode[1];
+	menuvar = menuMode[1];
 	if(menuvar == "Exit") { select = 0; }
 	else if(menuvar == "Cool"){ select =1; }
 	else if( menuvar == "Heat"){ select =2; }
@@ -911,7 +917,7 @@ void modeAssign()
 void fanAssign()
 {
 	int select = 0;
-	menuvar = menufan[1];
+	menuvar = menuFan[1];
 	if( menuvar == "Exit"){ select =0; }
 	else if(menuvar == "Auto"){ select =1; }	
 	else if(menuvar == "On") { select = 2; } 
@@ -956,7 +962,7 @@ void fanAssign()
 void setAssign()
 {
 	int select = 0;
-	menuvar = menuset[1];
+	menuvar = menuSet[1];
 	if( menuvar == "Exit"){ select =0; }
 	else if(menuvar == "Swing"){ select =1; }
 	else if(menuvar == "Max")  { select = 2; }

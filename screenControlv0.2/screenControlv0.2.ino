@@ -139,7 +139,7 @@ ControlAC.activateACMode();		//Checks and compares all the data necessary to tur
 
 	if (knobPush.getStatus() == false && lastKnobPush == true) // Enter Menu
 	{
-		delay(20);
+		delay(20);				//Delay 20 ms
 		enteringMenu();
 		menuExit = false;
 		int shiftVar=0;

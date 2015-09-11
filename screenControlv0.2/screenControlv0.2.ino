@@ -177,8 +177,8 @@ void loop()
 /***********************************************************************************/
 // Function Name  : printACMode													   
 // Description    : Print actual Ac Mode on Screen
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************************************/
 
 void printACMode(){
@@ -210,9 +210,9 @@ void printACMode(){
 }
 /**************************************************************************************************************************************************************/
 // Function Name  : rotation
-// Description    : Monitors Changes in the Knob via external Interrupts (Returns "1" for clockwise and "-1" for counter clockwise; otherwise returns "0")
-// parameters     : None
-// retrieval	  : int
+// Description    : Monitors Changes in the Knob via external Interrupts (Returns   "1" for clockwise and "-1" for counter clockwise; otherwise Returns   "0")
+// Parameters     : None
+// Returns  	  : int
 /*************************************************************************************************************************************************************/
 
 int rotation()
@@ -243,8 +243,8 @@ int rotation()
 /*********************************************************************************************************************/
 // Function Name  : changeWishedTemp
 // Description    : Adds or subtracts 0.5 to targetTemp depending on the rotation value given from rotation() function 
-// parameters	  : int rotation
-// retrieval      : None
+// Parameters	  : int rotation
+// Returns        : None
 /*********************************************************************************************************************/
 
 void changeWishedTemp(int rot) 
@@ -272,8 +272,8 @@ void changeWishedTemp(int rot)
 /*********************************************************************************************************************/
 // Function Name  : changeWishedStep
 // Description    : Adds or subtracts 0.25 to stepTemp depending on the rotation value given from rotation() function
-// parameters	  : int rotation
-// retrieval      : None
+// Parameters	  : int rotation
+// Returns        : None
 /*********************************************************************************************************************/
 
 void changeWishedStep(int rot) 
@@ -310,8 +310,8 @@ void changeWishedStep(int rot)
 /*********************************************************************************************************************/
 // Function Name  : changeWishedDelta
 // Description    : Adds or subtracts 0.25 to deltaTemp depending on the rotation value given from rotation() function
-// parameters	  : int rotation
-// retrieval      : None
+// Parameters	  : int rotation
+// Returns        : None
 /*********************************************************************************************************************/
 
 void changeWishedDelta(int rot) 
@@ -353,8 +353,8 @@ void changeWishedDelta(int rot)
 /*********************************************************************************************************************/
 // Function Name  : changeWishedMaxTemp
 // Description    : Adds or subtracts stepTemp to maxTemp depending on the rotation value given from rotation() function
-// parameters	  : int rotation
-// retrieval      : None
+// Parameters	  : int rotation
+// Returns        : None
 /*********************************************************************************************************************/
 
 void changeWishedMaxTemp(int rot)
@@ -396,8 +396,8 @@ void changeWishedMaxTemp(int rot)
 /*********************************************************************************************************************/
 // Function Name  : changeWishedMinTemp
 // Description    : Adds or subtracts stepTemp to minTemp depending on the rotation value given from rotation() function
-// parameters	  : int rotation
-// retrieval      : None
+// Parameters	  : int rotation
+// Returns        : None
 /*********************************************************************************************************************/
 
 void changeWishedMinTemp(int rot)
@@ -439,8 +439,8 @@ void changeWishedMinTemp(int rot)
 /*****************************************************************************************************************************************************/
 // Function Name  : changeModeSetting
 // Description    : Depending on the rotation value given from rotation() function it alternates the menu between ModeSetting  "OFF", "HEAT' or "COOL"
-// parameters	  : int rotation
-// retrieval      : None
+// Parameters	  : int rotation
+// Returns        : None
 /*****************************************************************************************************************************************************/
 
 void changeModeSetting(int rot) 
@@ -458,8 +458,8 @@ void changeModeSetting(int rot)
 /*********************************************************************/
 // Function Name  : enteringMenu
 // Description    : What to do as the program enters into "Menu Mode"
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /********************************************************************/
 
 void enteringMenu() 
@@ -475,8 +475,8 @@ void enteringMenu()
 /******************************************************************/
 // Function Name  : exitingMenu
 // Description    : What to do as the program exits "Menu Mode"
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /*****************************************************************/
 
 void exitingMenu() 
@@ -494,8 +494,8 @@ void exitingMenu()
 /*******************************************/
 // Function Name  : menuPrintLeftMainRight
 // Description    : prints menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /*******************************************/
 
 void menuPrintLeftMainRight(String* array)
@@ -508,8 +508,8 @@ void menuPrintLeftMainRight(String* array)
 /***************************************************/
 // Function Name  : arrayshiftCW
 // Description    : Shifts the giver array clockwise
-// parameters	  : *String,int
-// retrieval      : None
+// Parameters	  : *String,int
+// Returns        : None
 /***************************************************/
 
 void arrayshiftCW(String *array, int size)
@@ -525,8 +525,8 @@ void arrayshiftCW(String *array, int size)
 /***********************************************************/
 // Function Name  : arrayshiftCWW
 // Description    : Shifts the giver array counter clockwise
-// parameters	  : *String,int
-// retrieval      : None
+// Parameters	  : *String,int
+// Returns        : None
 /***********************************************************/
 
 void arrayshiftCWW(String *array, int size)
@@ -544,8 +544,8 @@ void arrayshiftCWW(String *array, int size)
 /***********************************************************/
 // Function Name  : principalMenu
 // Description    : Principal Menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void principalMenu()
@@ -588,8 +588,8 @@ void principalMenu()
 /***********************************************************/
 // Function Name  : modeMenu
 // Description    : Mode Menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void modeMenu()
@@ -633,8 +633,8 @@ void modeMenu()
 /***********************************************************/
 // Function Name  : setMenu
 // Description    : Set Menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 void setMenu()
 {
@@ -675,8 +675,8 @@ void setMenu()
 /***********************************************************/
 // Function Name  : fanMenu
 // Description    : Fan Menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 	
 void fanMenu()
@@ -719,8 +719,8 @@ void fanMenu()
 /***********************************************************/
 // Function Name  : stepMenu
 // Description    : Step Menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void stepMenu(){
@@ -742,8 +742,8 @@ void stepMenu(){
 /***********************************************************/
 // Function Name  : deltaMenu
 // Description    : Delta Menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void deltaMenu(){
@@ -765,8 +765,8 @@ void deltaMenu(){
 /***********************************************************/
 // Function Name  : maxTempMenu
 // Description    : Max Temperature Menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void maxTempMenu(){
@@ -788,8 +788,8 @@ void maxTempMenu(){
 /***********************************************************/
 // Function Name  : minTempMenu
 // Description    : Min Temperature Menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void minTempMenu(){
@@ -813,8 +813,8 @@ void minTempMenu(){
 /***********************************************************/
 // Function Name  : menuSelect1
 // Description    : Go o the selected menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void menuSelect1()
@@ -854,8 +854,8 @@ void menuSelect1()
 /***********************************************************/
 // Function Name  : modeAssign
 // Description    : Go o the selected menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void modeAssign()
@@ -904,8 +904,8 @@ void modeAssign()
 /***********************************************************/
 // Function Name  : fanAssign
 // Description    : Go o the selected menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 	
 void fanAssign()
@@ -949,8 +949,8 @@ void fanAssign()
 /***********************************************************/
 // Function Name  : setAssign
 // Description    : Go o the selected menu
-// parameters	  : None
-// retrieval      : None
+// Parameters	  : None
+// Returns        : None
 /***********************************************************/
 
 void setAssign()

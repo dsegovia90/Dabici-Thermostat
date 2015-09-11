@@ -135,7 +135,7 @@ changeWishedTemp(rotation());	//Check if there is movement in the knob, if there
 		timerToCheckAmbientTemp = millis();											//set the timer to actual time
 	}
 
-ControlAC.activateACMode();
+ControlAC.activateACMode();		//Checks and compares all the data necessary to turn on or off the outputs to the AC
 
 	if (knobPush.getStatus() == false && lastKnobPush == true) // Enter Menu
 	{

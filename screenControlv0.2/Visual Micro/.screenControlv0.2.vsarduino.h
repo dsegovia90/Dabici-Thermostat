@@ -48,6 +48,6 @@ void modeAssign();
 void fanAssign();
 void setAssign();
 
-#include "D:\Documents\GitHub\Thermostat\Arduino 1.6\hardware\arduino\avr\variants\standard\pins_arduino.h" 
-#include "D:\Documents\GitHub\Thermostat\Arduino 1.6\hardware\arduino\avr\cores\arduino\arduino.h"
+#include "C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino 1.6\hardware\arduino\avr\variants\standard\pins_arduino.h" 
+#include "C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino 1.6\hardware\arduino\avr\cores\arduino\arduino.h"
 #include <screenControlv0.2.ino>

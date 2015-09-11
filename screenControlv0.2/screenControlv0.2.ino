@@ -1,3 +1,14 @@
+/*
+  *@Dabici Labs © 
+  * @file    main.c
+  * @author-1  Daniel Segovia
+  * @author-2  Diego Cepeda
+  * @version V 0.2
+  * @date    11-September-2015
+  * @brief   Intelligent Thermostat
+*/
+
+/*------Includes------*/
 #include "Encoder.h"
 #include "SPI.h"
 #include "Adafruit_GFX.h"
@@ -9,26 +20,32 @@
 #include "AcConfig.h"
 #include "AcControl.h"
 
+/*------Defines------*/
 #define ONE_WIRE_BUS 7
 
-//Encoder pins
+/*------Encoder Pins Assign------*/
 Encoder knob(2,3);
 
+/*------Push Button Variables------*/
 int clockOrCounterClock;
 bool lastKnobPush = true;
+/*------Push Button Pin Assign------*/
+PushButton knobPush(4);
 
 
-//Thermostat Global Variables
 
+/*------Thermostat Global Variables------*/
 
-bool menuExit = false;
 unsigned long timerToCheckAmbientTemp = 0;			//initialize this timer in 0 to later compare to actual time + delta
 unsigned long timerToSwitchMode = 0;				//initialize this timer in 0
 unsigned long acProtectionTimer = 0;				//initialize this timer in 0
 
+/*------Multi Purpose Menu Variables------*/
+bool menuExit = false;
 String menuvar;
 
-//Initialize Menu Arrays and Sizes////////////////////////////////////////////////
+
+/*------Initialize Menu Arrays and Sizes------*/
 int size_menu=4;
 String menu[4];
 
@@ -40,11 +57,12 @@ String menuset[5];
 
 int size_menufan=3;
 String menufan[3];
-//////////////////////////////////////////////////////////////////////////////////////
 
+/*------Initialize Temperature Sensor------*/
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature TemperatureSensor(&oneWire);
 
+/*------Initialize Display Settings------*/
 ThermostatScreen ScreenMode(200,200,4,ILI9340_WHITE);
 ThermostatScreen ScreenTargetTemp(50,100,7,ILI9340_WHITE);
 ThermostatScreen ScreenTargetTempText(217,155,1,ILI9340_WHITE);
@@ -57,13 +75,14 @@ ThermostatScreen ScreenAmbientTempText(95,53,1,ILI9340_WHITE);
 ThermostatScreen ScreenAcProtection(200,40,1,ILI9340_WHITE);
 
 
-PushButton knobPush(4);
 
-///Create default settings///
+/*------Create AC Configuration Object------*/
+
 AcConfig  ConfiglAC;
-//Assign Control Outputs///
+
+/*------Assign AC Control Outputs------*/
 AcControl ControlAC(15,14,16); //Pin A1, A0, A2 respectively
-/////////////////////////////////////
+
 
 int lastModeSetting=0;
 
@@ -71,6 +90,8 @@ int lastModeSetting=0;
 
 void setup()
 {
+	
+/*------Assing Menu String variables------*/
 menu[0]="Mode";
 menu[1]="Set";	
 menu[2]="Exit";
@@ -90,13 +111,15 @@ menuset[4]="Exit";
 menufan[0]="On";
 menufan[1]="Auto";
 menufan[2]="Exit";
+/*------------------------------------------*/
 
-		
-///Create default settings///
+/*------Create default AC Configuration------*/		
 ConfiglAC.begin();
 int lastModeSetting = ConfiglAC.getACMode();
-///Load default settings to control///
+
+/*------Load Default Settings to Control------*/		
 ControlAC.begin(ConfiglAC.getACMode(),ConfiglAC.getAmbientTemp(),ConfiglAC.getTargetTemp(),ConfiglAC.getDeltaTemp(),ConfiglAC.getAmbientTempInterval());
+
 
 TemperatureSensor.begin();					//Initialize communication with temp sensor
 tft.begin();								//Initialize display
@@ -106,25 +129,20 @@ TemperatureSensor.setResolution(11);		//Set resolution of temp sensor (takes abo
 TemperatureSensor.requestTemperatures();	//Request initial temperature to use in setup
 tft.fillScreen(ILI9340_BLACK);				//Fill screen to black (background color)
 tft.setRotation(3);							//Rotate Screen 3x90°
-
-//ScreenMode.print((String)ConfiglAC.getACMode());
-
-printACMode();										//print ConfiglAC.getACMode() on ScreenMode.print()
-
-ScreenTargetTemp.print(ConfiglAC.getTargetTemp());	//print the target temp
-ScreenTargetTempText.print("TARGET");				//print small text below the target temp
-
+printACMode();													//print ConfiglAC.getACMode() on ScreenMode.print()
+ScreenTargetTemp.print(ConfiglAC.getTargetTemp());				//print the target temp
+ScreenTargetTempText.print("TARGET");							//print small text below the target temp
 ConfiglAC.setAmbientTemp(TemperatureSensor.getTempCByIndex(0));	//go get ambient temp
 ControlAC.setAmbientTemp(ConfiglAC.getAmbientTemp());			//pass the variable to ControlAC so it can later calculate
 ScreenAmbientTemp.print(ConfiglAC.getAmbientTemp());			//Print the ambient temp
 ScreenAmbientTempText.print("AMBIENT");							//print the small text below ambient temp
- 
 
 }
 
 void loop()
 {
-changeWishedTemp(rotation());	//Check if there is movement in the knob, if there is add or subtract depending on the deltaStep
+	
+	changeWishedTemp(rotation());	//Check if there is movement in the knob, if there is add or subtract depending on the deltaStep
 
 	if (timerToCheckAmbientTemp + ConfiglAC.getAmbientTempInterval() <= millis())	//how often to go check for temp in sensor (depends of Config AC variable in milliseconds)
 	{
@@ -135,33 +153,33 @@ changeWishedTemp(rotation());	//Check if there is movement in the knob, if there
 		timerToCheckAmbientTemp = millis();											//set the timer to actual time
 	}
 
-ControlAC.activateACMode();		//Checks and compares all the data necessary to turn on or off the outputs to the AC
 
-	if (knobPush.getStatus() == false && lastKnobPush == true) // Enter Menu
-	{
-		delay(20);				//Delay 20 ms
-		enteringMenu();
-		menuExit = false;
-		int shiftVar=0;
-		principalMenu();
-		exitingMenu();
-	}
+		ControlAC.activateACMode();		//Checks and compares all the data necessary to turn on or off the outputs to the AC
 
+		if (knobPush.getStatus() == false && lastKnobPush == true) // Enter Menu
+		{
+			delay(20);				//Delay 20 ms
+			enteringMenu();
+			menuExit = false;
+			int shiftVar=0;
+			principalMenu();
+			exitingMenu();	
+		}
 
-
-// Exiting Menu
-lastKnobPush = knobPush.getStatus();
-
-
-
-
-
-
+	
+	lastKnobPush = knobPush.getStatus();
+	
 }
 
 
+/*------------------------------------Functions------------------------------------*/
 
-//Functions /////////////////////////////////////////////////////////////////
+/***********************************************************************************/
+// Function Name  : printACMode													   
+// Description    : Print actual Ac Mode on Screen
+// parameters	  : None
+// retrieval      : None
+/***********************************************************************************/
 
 void printACMode(){
 	
@@ -190,9 +208,14 @@ void printACMode(){
 	}
 	
 }
+/**************************************************************************************************************************************************************/
+// Function Name  : rotation
+// Description    : Monitors Changes in the Knob via external Interrupts (Returns "1" for clockwise and "-1" for counter clockwise; otherwise returns "0")
+// parameters     : None
+// retrieval	  : int
+/*************************************************************************************************************************************************************/
 
-
-int rotation() //Monitors Changes in the Knob via external Interrupts (Returns "CW" for clockwise and "CCW" for counter clockwise; otherwise returns "IDLE")
+int rotation()
 {
 	
 	if ((knob.read()/4) > 0)
@@ -217,7 +240,14 @@ int rotation() //Monitors Changes in the Knob via external Interrupts (Returns "
 	
 }
 
-void changeWishedTemp(int rot) //Adds or subtracts 0.5 to targetTemp
+/*********************************************************************************************************************/
+// Function Name  : changeWishedTemp
+// Description    : Adds or subtracts 0.5 to targetTemp depending on the rotation value given from rotation() function 
+// parameters	  : int rotation
+// retrieval      : None
+/*********************************************************************************************************************/
+
+void changeWishedTemp(int rot) 
 {
 	if (rot == 1)
 	{
@@ -238,6 +268,13 @@ void changeWishedTemp(int rot) //Adds or subtracts 0.5 to targetTemp
 		
 	}
 }
+
+/*********************************************************************************************************************/
+// Function Name  : changeWishedStep
+// Description    : Adds or subtracts 0.25 to stepTemp depending on the rotation value given from rotation() function
+// parameters	  : int rotation
+// retrieval      : None
+/*********************************************************************************************************************/
 
 void changeWishedStep(int rot) 
 {
@@ -269,6 +306,13 @@ void changeWishedStep(int rot)
 		ConfiglAC.setStepTemp(ConfiglAC.getStepTemp());	
 	}	
 }
+
+/*********************************************************************************************************************/
+// Function Name  : changeWishedDelta
+// Description    : Adds or subtracts 0.25 to deltaTemp depending on the rotation value given from rotation() function
+// parameters	  : int rotation
+// retrieval      : None
+/*********************************************************************************************************************/
 
 void changeWishedDelta(int rot) 
 {
@@ -306,6 +350,12 @@ void changeWishedDelta(int rot)
 	}
 }
 
+/*********************************************************************************************************************/
+// Function Name  : changeWishedMaxTemp
+// Description    : Adds or subtracts stepTemp to maxTemp depending on the rotation value given from rotation() function
+// parameters	  : int rotation
+// retrieval      : None
+/*********************************************************************************************************************/
 
 void changeWishedMaxTemp(int rot)
 {
@@ -343,6 +393,13 @@ void changeWishedMaxTemp(int rot)
 	}
 }
 
+/*********************************************************************************************************************/
+// Function Name  : changeWishedMinTemp
+// Description    : Adds or subtracts stepTemp to minTemp depending on the rotation value given from rotation() function
+// parameters	  : int rotation
+// retrieval      : None
+/*********************************************************************************************************************/
+
 void changeWishedMinTemp(int rot)
 {
 	if (rot == 1)
@@ -379,7 +436,14 @@ void changeWishedMinTemp(int rot)
 	}
 }
 
-void changeModeSetting(int rot) //ModeSetting means "OFF", "HEAT' or "COOL"
+/*****************************************************************************************************************************************************/
+// Function Name  : changeModeSetting
+// Description    : Depending on the rotation value given from rotation() function it alternates the menu between ModeSetting  "OFF", "HEAT' or "COOL"
+// parameters	  : int rotation
+// retrieval      : None
+/*****************************************************************************************************************************************************/
+
+void changeModeSetting(int rot) 
 {
 	if (rot == 1)
 	{
@@ -391,7 +455,14 @@ void changeModeSetting(int rot) //ModeSetting means "OFF", "HEAT' or "COOL"
 	}
 }
 
-void enteringMenu() //What to do as the program enters into "Menu Mode"
+/*********************************************************************/
+// Function Name  : enteringMenu
+// Description    : What to do as the program enters into "Menu Mode"
+// parameters	  : None
+// retrieval      : None
+/********************************************************************/
+
+void enteringMenu() 
 {
 	ScreenTargetTemp.eraseFloat();
 	ScreenTargetTempText.eraseString();
@@ -401,7 +472,14 @@ void enteringMenu() //What to do as the program enters into "Menu Mode"
 	delay(200);
 }
 
-void exitingMenu() // What to do as the program exits "Menu Mode"
+/******************************************************************/
+// Function Name  : exitingMenu
+// Description    : What to do as the program exits "Menu Mode"
+// parameters	  : None
+// retrieval      : None
+/*****************************************************************/
+
+void exitingMenu() 
 {
 	ScreenMenuMain.eraseString();
 	ScreenMenuRight.eraseString();
@@ -413,12 +491,26 @@ void exitingMenu() // What to do as the program exits "Menu Mode"
 	delay(200);
 }
 
+/*******************************************/
+// Function Name  : menuPrintLeftMainRight
+// Description    : prints menu
+// parameters	  : None
+// retrieval      : None
+/*******************************************/
+
 void menuPrintLeftMainRight(String* array)
 {
 	ScreenMenuMain.print(array[1]);
 	ScreenMenuRight.print(array[2]);
 	ScreenMenuLeft.print(array[0]);
 }
+
+/***************************************************/
+// Function Name  : arrayshiftCW
+// Description    : Shifts the giver array clockwise
+// parameters	  : *String,int
+// retrieval      : None
+/***************************************************/
 
 void arrayshiftCW(String *array, int size)
 {
@@ -430,6 +522,13 @@ void arrayshiftCW(String *array, int size)
 	array[size-1] = menuvar;
 }
 
+/***********************************************************/
+// Function Name  : arrayshiftCWW
+// Description    : Shifts the giver array counter clockwise
+// parameters	  : *String,int
+// retrieval      : None
+/***********************************************************/
+
 void arrayshiftCWW(String *array, int size)
 {
 	int shiftVar = 0;
@@ -440,7 +539,14 @@ void arrayshiftCWW(String *array, int size)
 	
 }
 
-//////////////////////////////////////Menus////////////////////////////////
+/*------------------------------------Menus------------------------------------*/
+
+/***********************************************************/
+// Function Name  : principalMenu
+// Description    : Principal Menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
 
 void principalMenu()
 {
@@ -478,6 +584,13 @@ void principalMenu()
 		}
 	}
 }
+
+/***********************************************************/
+// Function Name  : modeMenu
+// Description    : Mode Menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
 
 void modeMenu()
 {
@@ -517,6 +630,12 @@ void modeMenu()
 	}
 }
 
+/***********************************************************/
+// Function Name  : setMenu
+// Description    : Set Menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
 void setMenu()
 {
 	
@@ -552,6 +671,13 @@ void setMenu()
 		}
 	}
 }
+
+/***********************************************************/
+// Function Name  : fanMenu
+// Description    : Fan Menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
 	
 void fanMenu()
 {
@@ -590,6 +716,12 @@ void fanMenu()
 	}
 }
 
+/***********************************************************/
+// Function Name  : stepMenu
+// Description    : Step Menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
 
 void stepMenu(){
 	ScreenTargetTemp.print(ConfiglAC.getStepTemp());
@@ -607,6 +739,13 @@ void stepMenu(){
 	}	
 }
 
+/***********************************************************/
+// Function Name  : deltaMenu
+// Description    : Delta Menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
+
 void deltaMenu(){
 	ScreenTargetTemp.print(ConfiglAC.getDeltaTemp());
 	while (menuExit != true)
@@ -623,6 +762,13 @@ void deltaMenu(){
 	}
 }
 
+/***********************************************************/
+// Function Name  : maxTempMenu
+// Description    : Max Temperature Menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
+
 void maxTempMenu(){
 	ScreenTargetTemp.print(ConfiglAC.getMaxTemp());
 	while (menuExit != true)
@@ -638,6 +784,14 @@ void maxTempMenu(){
 		}
 	}
 }
+
+/***********************************************************/
+// Function Name  : minTempMenu
+// Description    : Min Temperature Menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
+
 void minTempMenu(){
 	ScreenTargetTemp.print(ConfiglAC.getMinTemp());
 	while (menuExit != true)
@@ -654,7 +808,15 @@ void minTempMenu(){
 	}
 }
 
-//////////////////////////////Menu selects////////////////////////////////////////
+/*------------------------------------Menu Select Routines------------------------------------*/
+
+/***********************************************************/
+// Function Name  : menuSelect1
+// Description    : Go o the selected menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
+
 void menuSelect1()
 {
 	int select = 0;
@@ -689,6 +851,12 @@ void menuSelect1()
 	}
 }
 
+/***********************************************************/
+// Function Name  : modeAssign
+// Description    : Go o the selected menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
 
 void modeAssign()
 {
@@ -732,6 +900,13 @@ void modeAssign()
 		break;
 	}
 }
+
+/***********************************************************/
+// Function Name  : fanAssign
+// Description    : Go o the selected menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
 	
 void fanAssign()
 {
@@ -770,6 +945,13 @@ void fanAssign()
 	}
 	
 }
+
+/***********************************************************/
+// Function Name  : setAssign
+// Description    : Go o the selected menu
+// parameters	  : None
+// retrieval      : None
+/***********************************************************/
 
 void setAssign()
 {

@@ -7,6 +7,12 @@ Arduino 1.6/java
 Arduino 1.6/lib
 Arduino 1.6/reference
 Arduino 1.6/tools
+screenControlv0.2/Debug
+screenControlv0.2/Release
+screenControlv0.2/Visual Micro
+screenControlv0.2/screenControlv0.2.atsln
+screenControlv0.2/screenControlv0.2.atsuo
+screenControlv0.2/screenControlv0.2.cppproj
 
 #Arduino Trash files to Ignore
 Arduino 1.6/arduino.l4j.ini

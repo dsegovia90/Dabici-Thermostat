@@ -24,4 +24,6 @@ C:\Users\Diego\AppData\Local\V.Micro\Arduino\Builds\screenControlv0.2\uno\screen
  C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino\ 1.6\libraries\dallas-temperature-control/DallasTemperature.h \
  C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino\ 1.6\libraries\AcConfig/AcConfig.h \
  C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino\ 1.6\libraries\AcControl/AcControl.h \
+ C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino\ 1.6\hardware\arduino\avr\libraries\SoftwareSerial/SoftwareSerial.h \
+ C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino\ 1.6\hardware\arduino\avr\cores\arduino/Stream.h \
  C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino\ 1.6\hardware\arduino\avr\cores\arduino/arduino.h

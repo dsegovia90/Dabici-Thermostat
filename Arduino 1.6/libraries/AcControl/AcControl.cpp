@@ -72,10 +72,10 @@ void AcControl::activateACMode()
 		digitalWrite(_fanPin,LOW);
 		digitalWrite(_coolPinStg1,LOW);
 		digitalWrite(_heatPinStg1,LOW);
-		
+	
 	}
 	//////////////////////////////// Cooling
-	else if (_acMode == 1 && _ambientTemp > _targetTemp + _deltaTemp /*&& _acProtection == false*/)
+	else if (_acMode == 1 && _ambientTemp > _targetTemp +_deltaTemp && _acProtection == false)
 	{
 		digitalWrite(_fanPin,HIGH);
 		digitalWrite(_coolPinStg1,HIGH);
@@ -91,11 +91,12 @@ void AcControl::activateACMode()
 		
 	}
 	///////////////////////////////// Heating
-	else if (_acMode == 2 && _ambientTemp < _targetTemp - _deltaTemp /*&& _acProtection == false*/)
+	else if (_acMode == 2 && _ambientTemp < _targetTemp - _deltaTemp && _acProtection == false)
 	{
 		digitalWrite(_fanPin,HIGH);
 		digitalWrite(_coolPinStg1,LOW);
 		digitalWrite(_heatPinStg1,HIGH);
+		
 		
 	}else if (_acMode == 2 && _ambientTemp >= _targetTemp - _deltaTemp /*&& _acProtection == false*/)
 	{
@@ -113,4 +114,5 @@ void AcControl::activateACMode()
 		digitalWrite(_heatPinStg1,LOW);
 	
 	}
+
 }

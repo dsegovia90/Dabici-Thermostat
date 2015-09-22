@@ -22,6 +22,7 @@ extern "C" void __cxa_pure_virtual() {;}
 
 //
 //
+void checkTimeProtection();
 void printACMode();
 int rotation();
 void changeWishedTemp(int rot);
@@ -35,19 +36,19 @@ void exitingMenu();
 void menuPrintLeftMainRight(String* array);
 void arrayshiftCW(String *array, int size);
 void arrayshiftCWW(String *array, int size);
-void principalMenu();
-void modeMenu();
-void setMenu();
-void fanMenu();
-void stepMenu();
-void deltaMenu();
-void maxTempMenu();
-void minTempMenu();
+void principalMenu(unsigned long times);
+void modeMenu(unsigned long times);
+void setMenu(unsigned long times);
+void fanMenu(unsigned long times);
+void stepMenu(unsigned long times);
+void deltaMenu(unsigned long times);
+void maxTempMenu(unsigned long times);
+void minTempMenu(unsigned long times);
 void menuSelect1();
 void modeAssign();
 void fanAssign();
 void setAssign();
 
-#include "D:\Documents\GitHub\Thermostat\Arduino 1.6\hardware\arduino\avr\variants\standard\pins_arduino.h" 
-#include "D:\Documents\GitHub\Thermostat\Arduino 1.6\hardware\arduino\avr\cores\arduino\arduino.h"
+#include "C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino 1.6\hardware\arduino\avr\variants\standard\pins_arduino.h" 
+#include "C:\Users\Diego\Documents\GitHub\Dabici-Thermostat\Arduino 1.6\hardware\arduino\avr\cores\arduino\arduino.h"
 #include <screenControlv0.2.ino>

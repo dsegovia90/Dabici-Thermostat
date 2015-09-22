@@ -19,6 +19,7 @@
 #include "DallasTemperature.h"
 #include "AcConfig.h"
 #include "AcControl.h"
+#include "SoftwareSerial.h"
 
 /*------Defines------*/
 #define ONE_WIRE_BUS 7
@@ -86,11 +87,20 @@ AcControl ControlAC(15,14,16); //Pin A1, A0, A2 respectively
 
 int lastModeSetting=0;
 
-
+unsigned long time_ReadN;
+unsigned long time_ReadO;
+unsigned long time_ReadS;
+/*------Assing WIFI String variables------*/
+String data;
+String setting;
+String set;
 
 void setup()
 {
-	
+
+/*------Begin Serial------*/	
+ Serial.begin(9600);
+ Serial.println("Start");
 /*------Assing Menu String variables------*/
 menu[0]="Mode";
 menu[1]="Set";	
@@ -140,7 +150,133 @@ ScreenAmbientTempText.print("AMBIENT");							//print the small text below ambie
 }
 
 void loop()
-{
+{	
+	if (Serial.available()){
+		data=(String)Serial.readString();
+		Serial.println(data);
+		setting=data.substring(0,4);
+		set=data.substring(5,7);
+		
+		
+		
+			if(setting=="maxt"){
+				int coolval= set.toInt();
+				if(coolval>=30){coolval=30;}
+				if(coolval<=18){coolval=18;}
+				ConfiglAC.setMaxTemp(coolval);
+					
+			}
+			if(setting=="mint"){
+				int coolval= set.toInt();
+				if(coolval>=30){coolval=30;}
+				if(coolval<=18){coolval=18;}
+				ConfiglAC.setMinTemp(coolval);
+				
+			}
+		
+		
+		if(setting=="delt"){
+			int coolval= set.toInt();
+			switch(coolval){
+			
+			case 1 :
+			ConfiglAC.setDeltaTemp(.25);
+			ControlAC.setDeltaTemp(ConfiglAC.getDeltaTemp());
+			break;
+			case 2 :
+			ConfiglAC.setDeltaTemp(.5);
+			ControlAC.setDeltaTemp(ConfiglAC.getDeltaTemp());
+			break;
+			case 3 :
+			ConfiglAC.setDeltaTemp(.75);
+			ControlAC.setDeltaTemp(ConfiglAC.getDeltaTemp());
+			break;
+			case 4 :
+			ConfiglAC.setDeltaTemp(1);
+			ControlAC.setDeltaTemp(ConfiglAC.getDeltaTemp());
+			break;
+			
+			 default:
+		
+			 break;
+			}
+			
+		}
+		
+		if(setting=="step"){
+			int coolval= set.toInt();
+			switch(coolval){
+				
+				case 1 :
+				ConfiglAC.setStepTemp(.25);
+				break;
+				case 2 :
+				ConfiglAC.setStepTemp(.5);				
+				break;
+				case 3 :
+				ConfiglAC.setStepTemp(.75);				
+				break;
+				case 4 :
+				ConfiglAC.setStepTemp(1);				
+				break;
+				
+				default:
+				
+				break;
+			}
+			
+		}
+		
+		
+		if(setting=="ooff"){
+			ConfiglAC.setACMode(0);
+			ControlAC.setACMode(ConfiglAC.getACMode());
+		}
+		
+		if(setting=="cool"){
+			int coolval= set.toInt();
+			if(coolval>=ConfiglAC.getMaxTemp()){coolval=ConfiglAC.getMaxTemp();}
+			if(coolval<=ConfiglAC.getMinTemp()){coolval=ConfiglAC.getMinTemp();}
+			ConfiglAC.setTargetTemp(coolval);
+			ControlAC.setTargetTemp(ConfiglAC.getTargetTemp());
+			ConfiglAC.setACMode(1);
+			ControlAC.setACMode(ConfiglAC.getACMode());
+			
+			
+		}
+		
+		if(setting=="heat"){
+			int heatval= set.toInt();
+			int coolval= set.toInt();
+			if(coolval>=ConfiglAC.getMaxTemp()){coolval=ConfiglAC.getMaxTemp();}
+			if(coolval<=ConfiglAC.getMinTemp()){coolval=ConfiglAC.getMinTemp();}	
+			ConfiglAC.setTargetTemp(coolval);
+			ControlAC.setTargetTemp(ConfiglAC.getTargetTemp());
+			ConfiglAC.setACMode(2);
+			ControlAC.setACMode(ConfiglAC.getACMode());
+			
+			
+			
+		}
+		
+		if(setting=="fann"){
+			
+			int fanval= set.toInt();
+			int coolval= set.toInt();
+			if(coolval==1){ConfiglAC.setACMode(3);}
+				else{ConfiglAC.setACMode(0);}
+			
+			
+			ControlAC.setACMode(ConfiglAC.getACMode());
+			
+		}
+		printACMode();
+		ScreenTargetTemp.print(ConfiglAC.getTargetTemp());
+		}
+		
+	
+		
+	checkTimeProtection();	//Check the status since las protection mode in AC
 	
 	changeWishedTemp(rotation());	//Check if there is movement in the knob, if there is add or subtract depending on the deltaStep
 
@@ -162,10 +298,11 @@ void loop()
 			enteringMenu();
 			menuExit = false;
 			int shiftVar=0;
-			principalMenu();
+			
+			principalMenu(millis());
 			exitingMenu();	
 		}
-
+;
 	
 	lastKnobPush = knobPush.getStatus();
 	
@@ -173,6 +310,34 @@ void loop()
 
 
 /*------------------------------------Functions------------------------------------*/
+
+
+/***********************************************************************************/
+// Function Name  : checkTimeProtection
+// Description    : Checks the status since las protection mode in AC
+// Parameters	  : None
+// Returns        : None
+/***********************************************************************************/
+
+void checkTimeProtection(){
+	
+	if(ControlAC.getAcProtection()==false){
+		time_ReadO=millis();
+		
+	}
+
+	if(ControlAC.getAcProtection()==true){
+		time_ReadN=millis();
+		time_ReadS=time_ReadN-time_ReadO;
+	}
+
+	if(time_ReadS>=10000){
+		ControlAC.setAcProtection(false);
+		
+		time_ReadO=0;
+		time_ReadS=0;
+	}
+}
 
 /***********************************************************************************/
 // Function Name  : printACMode													   
@@ -251,13 +416,24 @@ void changeWishedTemp(int rot)
 {
 	if (rot == 1)
 	{
-		ConfiglAC.setTargetTemp(ConfiglAC.getTargetTemp() + ConfiglAC.getStepTemp());
+		
+		if(ConfiglAC.getTargetTemp() + ConfiglAC.getStepTemp()>=ConfiglAC.getMaxTemp()){
+			ConfiglAC.setTargetTemp(ConfiglAC.getMaxTemp());
+		}
+		else{
+		ConfiglAC.setTargetTemp(ConfiglAC.getTargetTemp() + ConfiglAC.getStepTemp());}
+		
 		ControlAC.setTargetTemp(ConfiglAC.getTargetTemp());
 		ScreenTargetTemp.print(ConfiglAC.getTargetTemp());
 	}
 	if (rot == -1)
 	{	
-		ConfiglAC.setTargetTemp(ConfiglAC.getTargetTemp() -  ConfiglAC.getStepTemp());
+		if(ConfiglAC.getTargetTemp() - ConfiglAC.getStepTemp()<=ConfiglAC.getMinTemp()){
+			ConfiglAC.setTargetTemp(ConfiglAC.getMinTemp());
+		}
+		else{
+		ConfiglAC.setTargetTemp(ConfiglAC.getTargetTemp() -  ConfiglAC.getStepTemp());}
+		
 		ControlAC.setTargetTemp(ConfiglAC.getTargetTemp());
 		ScreenTargetTemp.print(ConfiglAC.getTargetTemp());
 	}
@@ -548,13 +724,16 @@ void arrayshiftCWW(String *array, int size)
 // Returns        : None
 /***********************************************************/
 
-void principalMenu()
+void principalMenu(unsigned long times)
 {
-	
+
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
-		
+		if(millis()-times >= 10000){
+			exitingMenu();
+			menuExit=true;
+		}
 		switch (rotation())
 		{
 			
@@ -581,6 +760,7 @@ void principalMenu()
 		ScreenMenuLeft.eraseString();
 		menuSelect1();
 		
+		
 		}
 	}
 }
@@ -592,14 +772,19 @@ void principalMenu()
 // Returns        : None
 /***********************************************************/
 
-void modeMenu()
+void modeMenu(unsigned long times)
 {
 	
 	menuPrintLeftMainRight(menumode);
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
-	
+		
+		if(millis()-times >= 10000){
+		exitingMenu();
+		menuExit=true;
+		}
+		
 		switch (rotation())
 		{
 			
@@ -636,14 +821,19 @@ void modeMenu()
 // Parameters	  : None
 // Returns        : None
 /***********************************************************/
-void setMenu()
+void setMenu(unsigned long times)
 {
 	
 	menuPrintLeftMainRight(menuset);
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
-		
+			
+			if(millis()-times >= 10000){
+				exitingMenu();
+				menuExit=true;
+			}
+			
 		switch (rotation())
 		{
 			case -1:
@@ -679,14 +869,19 @@ void setMenu()
 // Returns        : None
 /***********************************************************/
 	
-void fanMenu()
+void fanMenu(unsigned long times)
 {
 	
 	menuPrintLeftMainRight(menufan);
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
-		
+			
+			if(millis()-times >= 10000){
+				exitingMenu();
+				menuExit=true;
+			}
+			
 		switch (rotation())
 		{
 			
@@ -723,11 +918,17 @@ void fanMenu()
 // Returns        : None
 /***********************************************************/
 
-void stepMenu(){
+void stepMenu(unsigned long times){
 	ScreenTargetTemp.print(ConfiglAC.getStepTemp());
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
+	
+		if(millis()-times >= 10000){
+			exitingMenu();
+			menuExit=true;
+		}
+		
 		changeWishedStep(rotation());
 		delay(20);
 		if (knobPush.getStatus() == false && lastKnobPush == true){	 // Enter Menu
@@ -746,11 +947,17 @@ void stepMenu(){
 // Returns        : None
 /***********************************************************/
 
-void deltaMenu(){
+void deltaMenu(unsigned long times){
 	ScreenTargetTemp.print(ConfiglAC.getDeltaTemp());
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
+		
+		if(millis()-times >= 10000){
+			exitingMenu();
+			menuExit=true;
+		}
+		
 		changeWishedDelta(rotation());
 		delay(20);
 		if (knobPush.getStatus() == false && lastKnobPush == true){	 // Enter Menu
@@ -769,11 +976,17 @@ void deltaMenu(){
 // Returns        : None
 /***********************************************************/
 
-void maxTempMenu(){
+void maxTempMenu(unsigned long times){
 	ScreenTargetTemp.print(ConfiglAC.getMaxTemp());
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
+		
+		if(millis()-times >= 10000){
+			exitingMenu();
+			menuExit=true;
+		}
+		
 		changeWishedMaxTemp(rotation());
 		delay(20);
 		if (knobPush.getStatus() == false && lastKnobPush == true){	 // Enter Menu
@@ -792,11 +1005,17 @@ void maxTempMenu(){
 // Returns        : None
 /***********************************************************/
 
-void minTempMenu(){
+void minTempMenu(unsigned long times){
 	ScreenTargetTemp.print(ConfiglAC.getMinTemp());
 	while (menuExit != true)
 	{
 		lastKnobPush = knobPush.getStatus();
+		
+		if(millis()-times >= 10000){
+			exitingMenu();
+			menuExit=true;
+		}
+		
 		changeWishedMinTemp(rotation());
 		delay(20);
 		if (knobPush.getStatus() == false && lastKnobPush == true){	 // Enter Menu
@@ -834,15 +1053,15 @@ void menuSelect1()
 		break;
 		
 		case 1:
-		modeMenu();
+		modeMenu(millis());
 		break;
 		
 		case 2:
-		setMenu();
+		setMenu(millis());
 		break;
 		
 		case 3:
-		fanMenu();
+		fanMenu(millis());
 		break;
 		
 		default:
@@ -971,22 +1190,22 @@ void setAssign()
 		break;
 
 		case 1:
-		deltaMenu();
+		deltaMenu(millis());
 		menuExit = true;
 		break;
 		
 		case 2:
-		maxTempMenu();
+		maxTempMenu(millis());
 		menuExit = true;
 		break;
 		
 		case 3:
-		minTempMenu();
+		minTempMenu(millis());
 		menuExit = true;
 		break;
 		
 		case 4:
-		stepMenu();
+		stepMenu(millis());
 		menuExit = true;
 		break;
 		

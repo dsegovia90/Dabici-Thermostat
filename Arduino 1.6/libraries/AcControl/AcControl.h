@@ -40,6 +40,7 @@ unsigned long _ambientTempInterval;
 float _targetTemp;
 int _acMode;
 
+
 boolean _acProtection;
 
 };

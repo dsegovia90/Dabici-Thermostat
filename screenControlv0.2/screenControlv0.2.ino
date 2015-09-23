@@ -100,16 +100,13 @@ String set;
 
 void setup()
 {
-<<<<<<< HEAD
-	
-/*------Assign Menu String variables------*/
-=======
+
 
 /*------Begin Serial------*/	
  Serial.begin(9600);
  Serial.println("Start");
 /*------Assing Menu String variables------*/
->>>>>>> 68ddb8e54261ff0f07149fea2d9a021204eefbe1
+
 menu[0]="Mode";
 menu[1]="Set";	
 menu[2]="Exit";
